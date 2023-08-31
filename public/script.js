@@ -1,7 +1,7 @@
 const socket = io('/');
-console.log('socket= ', socket);
 const videoGrid = document.querySelector('#video-grid');
-console.log(ROOM_ID);
+const make_call_btn = document.querySelector('#make-call-btn');
+
 myPeer = new Peer({
   config: {
     iceServers: [
@@ -28,7 +28,6 @@ navigator.mediaDevices
     myPeer.on('call', (call) => {
       call.answer(stream);
       const video = document.createElement('video');
-      console.log(stream);
       call.on('stream', (userVideoStream) => {
         addVideoStream(video, userVideoStream);
       });
@@ -61,4 +60,14 @@ function addVideoStream(video, stream) {
     video.play();
   });
   videoGrid.append(video);
+}
+
+make_call_btn.addEventListener('click', callMyMobile);
+
+function callMyMobile() {
+  const mobilePeer = new Peer();
+  getUserMedia({ audio: true, video: true }).then((stream) => {
+    const call = myPeer.call();
+    call.on('stream', (remoteStream) => {});
+  });
 }

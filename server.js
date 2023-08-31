@@ -7,8 +7,10 @@ const { v4: uuidv4 } = require('uuid');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+let roomId = uuidv4();
+
 app.get('/', (req, res) => {
-  res.redirect(`/${uuidv4()}`);
+  res.redirect(`/${roomId}`);
 });
 
 app.get('/:room', (req, res) => {
@@ -18,12 +20,12 @@ app.get('/:room', (req, res) => {
 io.on('connection', (socket) => {
   socket.on('join-room', (roomId, userId) => {
     socket.join(roomId);
-    socket.to(roomId).broadcast.emit('user-connected', userId);
+    socket.to(roomId).emit('user-connected', userId);
   });
 
   socket.on('disconnect', () => {
     socket.join(roomId);
-    socket.to(roomId).broadcast.emit('user-diconnected', userId);
+    socket.to(roomId).emit('user-diconnected', userId);
   });
 });
 
